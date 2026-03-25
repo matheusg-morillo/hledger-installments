@@ -12,7 +12,7 @@ import (
 
 const dateFormat = "2006-01-02"
 
-type purchase struct {
+type Purchase struct {
 	date          string
 	description   string
 	category      string
@@ -22,7 +22,7 @@ type purchase struct {
 	liabilityName string
 }
 
-type installmentPlan struct {
+type InstallmentPlan struct {
 	monthly  float64
 	rounding float64
 	fromDate time.Time
@@ -64,7 +64,7 @@ func resolveJournalFile() string {
 	return home + "/.hledger/hledger.journal"
 }
 
-func collectPurchaseInfo(reader *bufio.Reader) purchase {
+func collectPurchaseInfo(reader *bufio.Reader) Purchase {
 	today := time.Now().Format(dateFormat)
 	date := prompt(reader, fmt.Sprintf("Data da compra [%s]", today))
 	if date == "" {
@@ -119,7 +119,7 @@ func collectPurchaseInfo(reader *bufio.Reader) purchase {
 		liabilityName = input
 	}
 
-	return purchase{
+	return Purchase{
 		date:          date,
 		description:   description,
 		category:      category,
@@ -130,16 +130,16 @@ func collectPurchaseInfo(reader *bufio.Reader) purchase {
 	}
 }
 
-func calculatePlan(p purchase) installmentPlan {
+func calculatePlan(p Purchase) InstallmentPlan {
 	purchaseDate, _ := time.Parse(dateFormat, p.date)
 	fromDate := time.Date(purchaseDate.Year(), purchaseDate.Month()+1, 1, 0, 0, 0, 0, time.UTC)
 	toDate := fromDate.AddDate(0, p.installments, 0)
 	monthly := math.Round((p.amount/float64(p.installments))*100) / 100
 	rounding := math.Round((p.amount-monthly*float64(p.installments))*100) / 100
-	return installmentPlan{monthly, rounding, fromDate, toDate}
+	return InstallmentPlan{monthly, rounding, fromDate, toDate}
 }
 
-func buildJournalEntry(p purchase, plan installmentPlan) string {
+func buildJournalEntry(p Purchase, plan InstallmentPlan) string {
 	var sb strings.Builder
 
 	// Purchase transaction
@@ -163,7 +163,7 @@ func buildJournalEntry(p purchase, plan installmentPlan) string {
 	return sb.String()
 }
 
-func printPreview(output string, p purchase, plan installmentPlan) {
+func printPreview(output string, p Purchase, plan InstallmentPlan) {
 	fmt.Println()
 	fmt.Println("================================================")
 	fmt.Println("Preview:")
