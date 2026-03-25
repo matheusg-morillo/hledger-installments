@@ -16,12 +16,22 @@ Gera entradas de journal para compras parceladas no cartão de crédito, incluin
 ```bash
 git clone <repo>
 cd hledger-installments
-go build -o hledger-installments main.go
+make build
 ```
 
-### Ou usar o binário compilado
+### Instalar em `~/.local/bin`
 
-O binário `hledger-installments` já está disponível para Linux x86-64.
+```bash
+make install
+```
+
+### Outros comandos
+
+| Comando | Descrição |
+|---------|-----------|
+| `make build` | Compila em `bin/hledger-add-installments` |
+| `make install` | Compila e copia para `~/.local/bin` |
+| `make clean` | Remove o diretório `bin/` |
 
 ## Configuração
 
