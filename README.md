@@ -1,17 +1,17 @@
 # hledger-installments
 
-Ferramenta de linha de comando para registrar compras parceladas no [hledger](https://hledger.org/).
+Command-line tool for recording installment purchases in [hledger](https://hledger.org/).
 
-## O que faz
+## What it does
 
-Gera entradas de journal para compras parceladas no cartão de crédito, incluindo:
+Generates journal entries for credit card installment purchases, including:
 
-- A transação inicial da compra
-- Uma regra de recorrência mensal (`~`) para cada parcela debitando o cartão
+- The initial purchase transaction
+- A monthly recurrence rule (`~`) for each installment debiting the card
 
-## Instalação
+## Installation
 
-### Compilar do fonte
+### Build from source
 
 ```bash
 git clone <repo>
@@ -19,47 +19,47 @@ cd hledger-installments
 make build
 ```
 
-### Instalar em `~/.local/bin`
+### Install to `~/.local/bin`
 
 ```bash
 make install
 ```
 
-### Outros comandos
+### Other commands
 
-| Comando | Descrição |
-|---------|-----------|
-| `make build` | Compila em `bin/hledger-add-installments` |
-| `make install` | Compila e copia para `~/.local/bin` |
-| `make clean` | Remove o diretório `bin/` |
+| Command | Description |
+|---------|-------------|
+| `make build` | Builds to `bin/hledger-add-installments` |
+| `make install` | Builds and copies to `~/.local/bin` |
+| `make clean` | Removes the `bin/` directory |
 
-## Configuração
+## Configuration
 
-Por padrão, as entradas são salvas em `~/.hledger/hledger.journal`. Para usar outro arquivo:
+By default, entries are saved to `~/.hledger/hledger.journal`. To use a different file:
 
 ```bash
-export LEDGER_FILE=/caminho/para/seu/arquivo.journal
+export LEDGER_FILE=/path/to/your/file.journal
 ```
 
-## Uso
+## Usage
 
 ```bash
 ./hledger-installments
 ```
 
-O programa guia interativamente pela coleta de informações:
+The program interactively guides you through collecting the required information:
 
 ```
-Data da compra [2026-03-25]: 2026-03-20
-Descricao: Oculos novos
-Categoria (expenses:...): expenses:saude:otica
-Valor total (ex: 4773.00): 900.00
-Numero de parcelas: 3
-Cartao (liabilities:cartao:...): liabilities:cartao:nubank:ultravioleta
-Nome da liability parcelada [oculos-novos]:
+Purchase date [2026-03-25]: 2026-03-20
+Description: Oculos novos
+Category (expenses:...): expenses:saude:otica
+Total amount (e.g. 4773.00): 900.00
+Number of installments: 3
+Card (liabilities:cartao:...): liabilities:cartao:nubank:ultravioleta
+Installment liability name [oculos-novos]:
 ```
 
-Após a confirmação, as seguintes entradas são adicionadas ao journal:
+After confirmation, the following entries are added to the journal:
 
 ```
 2026-03-20 Oculos novos
@@ -71,14 +71,14 @@ Após a confirmação, as seguintes entradas são adicionadas ao journal:
     liabilities:cartao:nubank:ultravioleta
 ```
 
-## Detalhes
+## Details
 
-- O arredondamento das parcelas é tratado automaticamente (diferença aplicada na última parcela)
-- As parcelas começam no mês seguinte à compra
-- Aceita vírgula ou ponto como separador decimal
-- Mostra preview das entradas antes de salvar
+- Installment rounding is handled automatically (difference applied to the last installment)
+- Installments start the month after the purchase
+- Accepts comma or period as decimal separator
+- Shows a preview of entries before saving
 
-## Dependências
+## Dependencies
 
-- [hledger](https://hledger.org/) instalado e configurado
-- Go 1.21+ para compilar (sem dependências externas)
+- [hledger](https://hledger.org/) installed and configured
+- Go 1.21+ to build (no external dependencies)
