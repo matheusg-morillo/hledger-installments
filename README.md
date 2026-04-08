@@ -11,17 +11,16 @@ Generates journal entries for credit card installment purchases, including:
 
 ## Installation
 
-### Build from source
+### Dependencies
 
-```bash
-git clone <repo>
-cd hledger-installments
-make build
-```
+- [stack](https://docs.haskellstack.org/) (Haskell build tool)
+- [hledger](https://hledger.org/) installed and configured
 
 ### Install to `~/.local/bin`
 
 ```bash
+git clone <repo>
+cd hledger-installments
 make install
 ```
 
@@ -29,13 +28,12 @@ make install
 
 | Command | Description |
 |---------|-------------|
-| `make build` | Builds to `bin/hledger-add-installments` |
-| `make install` | Builds and copies to `~/.local/bin` |
-| `make clean` | Removes the `bin/` directory |
+| `make install` | Copies script to `~/.local/bin/hledger-parcela` |
+| `make uninstall` | Removes the script from `~/.local/bin` |
 
 ## Configuration
 
-By default, entries are saved to `~/.hledger/hledger.journal`. To use a different file:
+By default, entries are saved to the journal configured in hledger. To use a different file:
 
 ```bash
 export LEDGER_FILE=/path/to/your/file.journal
@@ -44,22 +42,19 @@ export LEDGER_FILE=/path/to/your/file.journal
 ## Usage
 
 ```bash
-./hledger-installments
+hledger parcela DESCRICAO VALOR_TOTAL N_PARCELAS CONTA_CARTAO [CATEGORIA]
+hledger parcela DESCRICAO VALOR_TOTAL N_PARCELAS CONTA_CARTAO [CATEGORIA] --parcela-atual N
 ```
 
-The program interactively guides you through collecting the required information:
+Examples:
 
-```
-Purchase date [2026-03-25]: 2026-03-20
-Description: Oculos novos
-Category (expenses:...): expenses:saude:otica
-Total amount (e.g. 4773.00): 900.00
-Number of installments: 3
-Card (liabilities:cartao:...): liabilities:cartao:nubank:ultravioleta
-Installment liability name [oculos-novos]:
+```bash
+hledger parcela "iPhone 17" 5207.90 12 liabilities:cartao:c6:carbon expenses:tech
+hledger parcela "Curso Haskell" 1200.00 6 liabilities:cartao:nubank:ultravioleta
+hledger parcela "RAM" 363.32 12 liabilities:cartao:c6:carbon expenses:tech --parcela-atual 9
 ```
 
-After confirmation, the following entries are added to the journal:
+The following entries are added to the journal:
 
 ```
 2026-03-20 Oculos novos
@@ -81,4 +76,4 @@ After confirmation, the following entries are added to the journal:
 ## Dependencies
 
 - [hledger](https://hledger.org/) installed and configured
-- Go 1.21+ to build (no external dependencies)
+- [stack](https://docs.haskellstack.org/) to run the script

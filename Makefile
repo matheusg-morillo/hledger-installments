@@ -1,15 +1,10 @@
-BINARY_NAME := hledger-add-installments
-BIN_DIR := bin
+SCRIPT_NAME := hledger-parcela
 INSTALL_DIR := $(HOME)/.local/bin
 
-.PHONY: build install clean
+.PHONY: install uninstall
 
-build:
-	go build -o $(BIN_DIR)/$(BINARY_NAME) main.go
+install:
+	install -m 755 $(SCRIPT_NAME).hs $(INSTALL_DIR)/$(SCRIPT_NAME)
 
-install: build
-	cp $(BIN_DIR)/$(BINARY_NAME) $(INSTALL_DIR)/$(BINARY_NAME)
-	chmod +x $(INSTALL_DIR)/$(BINARY_NAME)
-
-clean:
-	rm -rf $(BIN_DIR)
+uninstall:
+	rm -f $(INSTALL_DIR)/$(SCRIPT_NAME)
