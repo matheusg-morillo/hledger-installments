@@ -4,16 +4,17 @@ Command-line tool for recording installment purchases in [hledger](https://hledg
 
 ## What it does
 
-Generates journal entries for credit card installment purchases, including:
+Interactively generates journal entries for credit card installment purchases, including:
 
 - The initial purchase transaction
-- A monthly recurrence rule (`~`) for each installment debiting the card
+- The current installment payment
+- A monthly recurrence rule (`~`) for the remaining installments
 
 ## Installation
 
 ### Dependencies
 
-- [stack](https://docs.haskellstack.org/) (Haskell build tool)
+- [cabal](https://www.haskell.org/cabal/) (Haskell build tool)
 - [hledger](https://hledger.org/) installed and configured
 
 ### Install to `~/.local/bin`
@@ -24,6 +25,8 @@ cd hledger-installments
 make install
 ```
 
+On first run, cabal will download and compile `haskeline` automatically.
+
 ### Other commands
 
 | Command | Description |
@@ -33,7 +36,7 @@ make install
 
 ## Configuration
 
-By default, entries are saved to the journal configured in hledger. To use a different file:
+By default, entries are saved to `~/.hledger.journal`. To use a different file:
 
 ```bash
 export LEDGER_FILE=/path/to/your/file.journal
@@ -42,38 +45,44 @@ export LEDGER_FILE=/path/to/your/file.journal
 ## Usage
 
 ```bash
-hledger parcela DESCRICAO VALOR_TOTAL N_PARCELAS CONTA_CARTAO [CATEGORIA]
-hledger parcela DESCRICAO VALOR_TOTAL N_PARCELAS CONTA_CARTAO [CATEGORIA] --parcela-atual N
+hledger-parcela
 ```
 
-Examples:
-
-```bash
-hledger parcela "iPhone 17" 5207.90 12 liabilities:cartao:c6:carbon expenses:tech
-hledger parcela "Curso Haskell" 1200.00 6 liabilities:cartao:nubank:ultravioleta
-hledger parcela "RAM" 363.32 12 liabilities:cartao:c6:carbon expenses:tech --parcela-atual 9
-```
-
-The following entries are added to the journal:
+The program guides you through each field interactively, with tab completion for account names:
 
 ```
-2026-03-20 Oculos novos
-    expenses:saude:otica               R$ 900.00
-    liabilities:parcelado:oculos-novos
+Journal: /home/user/.hledger.journal
 
-~ monthly from 2026-04-01 to 2026-07-01  Oculos novos parcela
-    liabilities:parcelado:oculos-novos  R$ 300.00
-    liabilities:cartao:nubank:ultravioleta
+Purchase date [2026-04-08]: 2026-03-20
+Description: Oculos novos
+Category [expenses:general]: expenses:health
+Total amount: 900.00
+Number of installments: 3
+Current installment [1]:
+Card account: liabilities:card:nubank
+Liability name [oculos-novos]:
+
+------------------------------------------------------------
+2026-03-20 Oculos novos 3x
+    expenses:health                         R$ 900.00
+    liabilities:installments:oculos-novos   R$ -900.00
+
+2026-03-20 Oculos novos 1/3
+    liabilities:installments:oculos-novos   R$ 300.00
+    liabilities:card:nubank
+
+~ monthly from 2026-04-20 to 2026-05-20  Oculos novos installment
+    liabilities:installments:oculos-novos   R$ 300.00
+    liabilities:card:nubank
+------------------------------------------------------------
+
+Save to journal? [Y/n]:
 ```
 
 ## Details
 
+- Tab completion for account names reads from your journal file
 - Installment rounding is handled automatically (difference applied to the last installment)
-- Installments start the month after the purchase
 - Accepts comma or period as decimal separator
-- Shows a preview of entries before saving
-
-## Dependencies
-
-- [hledger](https://hledger.org/) installed and configured
-- [stack](https://docs.haskellstack.org/) to run the script
+- Shows a preview before saving
+- `Current installment` allows recording a purchase mid-way through (e.g. installment 3 of 12)
