@@ -1,4 +1,4 @@
-SCRIPT_NAME := hledger-parcela
+SCRIPT_NAME := hledger-add-installment
 INSTALL_DIR := $(HOME)/.local/bin
 
 .PHONY: install uninstall
